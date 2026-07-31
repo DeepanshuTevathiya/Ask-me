@@ -1,0 +1,64 @@
+# ==========================
+# Core
+# ==========================
+python-dotenv>=1.1.0
+requests>=2.32.0
+
+# ==========================
+# Video Processing
+# ==========================
+yt-dlp>=2025.6.30
+ffmpeg-python>=0.2.0
+pydub>=0.25.1
+
+# ==========================
+# Speech-to-Text
+# ==========================
+openai-whisper>=20250625
+torch>=2.7.0
+torchaudio>=2.7.0
+
+# ==========================
+# Translation
+# ==========================
+deep-translator>=1.11.4
+
+# ==========================
+# Mistral API
+# ==========================
+mistralai>=1.8.0
+
+# ==========================
+# LangChain
+# ==========================
+langchain>=0.3.27
+langchain-core>=0.3.74
+langchain-community>=0.3.29
+langchain-huggingface>=0.3.1
+langchain-chroma>=0.2.5
+langchain-text-splitters>=0.3.9
+langchain-mistralai
+
+# ==========================
+# Embeddings
+# ==========================
+sentence-transformers>=5.1.0
+transformers>=4.55.0
+
+# ==========================
+# Vector Database
+# ==========================
+chromadb>=1.0.16
+
+# ==========================
+# Streamlit
+# ==========================
+streamlit>=1.48.0
+
+# ==========================
+# Utilities
+# ==========================
+numpy>=2.3.2
+pandas>=2.3.1
+tqdm>=4.67.1
+pydantic>=2.11.7
