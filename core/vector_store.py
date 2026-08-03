@@ -13,7 +13,8 @@ EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 
 def get_embedding():
     return HuggingFaceEndpointEmbeddings(
-        model=EMBEDDING_MODEL
+        # model=EMBEDDING_MODEL
+        repo_id="sentence-transformers/all-MiniLM-L6-v2"
     )
 
 def build_vector_store(transcript:str)->Chroma:
