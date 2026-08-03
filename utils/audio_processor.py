@@ -8,7 +8,7 @@ DOWNLOADS_DIR = "downloads"
 os.makedirs(DOWNLOADS_DIR, exist_ok=True)
 
 def extract_yt_audio(url:str)->str:
-    output_path = os.path.join(DOWNLOADS_DIR, '%(title)s')
+    output_path = os.path.join(DOWNLOADS_DIR, '%(title)s.%(ext)s')
     ydl_opts = {
         'format': 'bestaudio/best',
         'outtmpl': output_path,
@@ -23,8 +23,8 @@ def extract_yt_audio(url:str)->str:
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=True)
         filepath = ydl.prepare_filename(info)
-        # base, _ = filepath.rsplit('.', 1)
-        filepath = filepath + '.wav'
+        base, _ = filepath.rsplit('.', 1)
+        filepath = base + '.wav'
         return filepath
 
 
@@ -53,7 +53,7 @@ def chunk_audio(audio_path:str, chunk_size:int = 10)->list:
     for i, st in enumerate(range(0, len(audio), chunk_ms)):
         chunk = audio[st: st+chunk_ms]
         chunk_path = f"{audio_path}_chunk_{i+1}.wav"
-        chunk.export(chunk_path, format='.wav')
+        chunk.export(chunk_path, format='wav')
         chunks.append(chunk_path)
 
     return chunks
@@ -71,5 +71,3 @@ def process_audio(audio_path:str)->list:
     chunks = chunk_audio(audio_data)
     print(f"Got {len(chunks)} chunk(s).")
     return chunks
-
-print(process_audio("https://www.youtube.com/watch?v=G_11xYvBtng"))
