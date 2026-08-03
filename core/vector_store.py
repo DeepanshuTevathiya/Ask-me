@@ -50,4 +50,4 @@ def get_retriever(vector_store:Chroma, k:int = 4):
     return vector_store.as_retriever(
         search_type = "similarity",
         kwargs={"k":k}
-    )
+    ) 

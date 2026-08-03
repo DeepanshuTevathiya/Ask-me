@@ -107,4 +107,4 @@ def transcribe_all(chunks:list, language:str="english")->str:
         full_transcript += trascript + " "
 
     print("TRANSCRIPTION COMPLETE 🎉")
-    return full_transcript.strip()
+    return full_transcript.strip() 

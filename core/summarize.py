@@ -65,7 +65,7 @@ def get_summary(transcript:str)->str:
         input_variables=["text"],
         partial_variables={"format_instruction": parser.get_format_instructions()}
     )
-
+ 
     final_chain = combined_prompt | llm | parser
 
     summary = final_chain.invoke({

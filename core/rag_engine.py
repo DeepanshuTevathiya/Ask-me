@@ -56,7 +56,7 @@ def load_rag_chain():
 
         ("human", "{question}"),
     ])
-
+ 
     rag_chain = (
         {"context": retriever | RunnableLambda(format_docs),
          "question": RunnablePassthrough()}
