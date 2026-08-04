@@ -12,6 +12,80 @@ load_dotenv()
 
 st.set_page_config(page_title="Waveform", page_icon="🎙️", layout="wide")
 
+st.markdown(
+    """
+    <style>
+    .wf-hero {
+        padding: 3.5rem 0 1.5rem 0;
+    }
+    .wf-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: monospace;
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+        color: #E8A33D;
+        margin-bottom: 1.2rem;
+    }
+    .wf-eyebrow-dot {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: #E8A33D;
+        box-shadow: 0 0 0 4px rgba(232,163,61,0.16);
+    }
+    .wf-hero h1 {
+        font-size: 2.8rem;
+        font-weight: 700;
+        line-height: 1.1;
+        margin-bottom: 1rem;
+    }
+    .wf-hero p {
+        font-size: 1.05rem;
+        color: rgba(250,250,250,0.6);
+        max-width: 46ch;
+        margin-bottom: 0;
+    }
+    .wf-card {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 12px;
+        padding: 1.3rem 1.4rem;
+        height: 100%;
+    }
+    .wf-card .wf-num {
+        font-family: monospace;
+        font-size: 0.75rem;
+        color: #E8A33D;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+    .wf-card .wf-card-title {
+        font-weight: 600;
+        font-size: 0.98rem;
+        margin-bottom: 0.35rem;
+    }
+    .wf-card .wf-card-desc {
+        font-size: 0.85rem;
+        color: rgba(250,250,250,0.55);
+        line-height: 1.5;
+    }
+    .wf-steps {
+        margin-top: 2.5rem;
+    }
+    .wf-steps-label {
+        font-family: monospace;
+        font-size: 0.75rem;
+        letter-spacing: 0.04em;
+        color: rgba(250,250,250,0.4);
+        text-transform: uppercase;
+        margin-bottom: 0.9rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 if "result" not in st.session_state:
     st.session_state.result = None
 if "chat_history" not in st.session_state:
@@ -101,8 +175,45 @@ if process_clicked and source:
 result = st.session_state.result
 
 if result is None:
-    st.title("Waveform")
-    st.write("Add a YouTube URL or local file in the sidebar, then hit **Process recording**.")
+    st.markdown(
+        """
+        <div class="wf-hero">
+            <div class="wf-eyebrow"><span class="wf-eyebrow-dot"></span> Local &amp; YouTube sources supported</div>
+            <h1>Every recording,<br>heard once,<br>understood forever.</h1>
+            <p>Drop in a call, a lecture, or a YouTube link. Waveform transcribes it, pulls out the
+            decisions and open questions, and stays around afterward so you can ask it anything.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    cards = [
+        ("01", "Transcribe", "English or Hinglish, straight from a YouTube link or local file."),
+        ("02", "Extract", "Action items, key decisions, and open questions — pulled out automatically."),
+        ("03", "Chat", "Ask follow-up questions and get answers grounded in the transcript."),
+    ]
+    cols = st.columns(3)
+    for col, (num, title, desc) in zip(cols, cards):
+        with col:
+            st.markdown(
+                f"""
+                <div class="wf-card">
+                    <span class="wf-num">{num}</span>
+                    <div class="wf-card-title">{title}</div>
+                    <div class="wf-card-desc">{desc}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+    st.markdown('<div class="wf-steps">', unsafe_allow_html=True)
+    st.markdown('<div class="wf-steps-label">Get started</div>', unsafe_allow_html=True)
+    st.markdown(
+        "1. Choose a **source** in the sidebar — YouTube URL or a local file.\n"
+        "2. Pick a **language**.\n"
+        "3. Hit **Process recording** and wait for the pipeline to finish."
+    )
+    st.markdown("</div>", unsafe_allow_html=True)
 else:
     st.title(result["title"])
 
