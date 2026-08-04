@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waveform — Turn recordings into structured briefs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- background signal strip -->
+<div class="bg-signal" aria-hidden="true"></div>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <span class="logo-mark" aria-hidden="true">
+        <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+      </span>
+      Waveform
+    </a>
+    <nav class="main-nav">
+      <a href="#workspace" class="nav-link">Workspace</a>
+      <a href="#how" class="nav-link">How it works</a>
+      <a href="#" class="nav-link">Docs</a>
+    </nav>
+    <div class="header-cta">
+      <button class="btn btn-ghost" type="button">Sign in</button>
+      <button class="btn btn-primary" type="button" id="nav-cta">New session</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ HERO / INTAKE ============ -->
+  <section class="hero" id="workspace">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> Local &amp; YouTube sources supported</p>
+        <h1>Every recording,<br>heard once,<br><em>understood forever.</em></h1>
+        <p class="hero-sub">Drop in a call, a lecture, or a YouTube link. Waveform transcribes it, pulls out the decisions and open questions, and stays around afterward so you can ask it anything.</p>
+        <ul class="hero-stats">
+          <li><span class="stat-num">01</span> Transcribe in English or Hinglish</li>
+          <li><span class="stat-num">02</span> Auto-extract actions, decisions &amp; questions</li>
+          <li><span class="stat-num">03</span> Chat with the transcript afterward</li>
+        </ul>
+      </div>
+
+      <div class="intake-card" id="intake-card">
+        <div class="intake-tabs" role="tablist" aria-label="Source type">
+          <button class="intake-tab is-active" data-source="url" role="tab" aria-selected="true" type="button">YouTube URL</button>
+          <button class="intake-tab" data-source="file" role="tab" aria-selected="false" type="button">Local file</button>
+        </div>
+
+        <form id="intake-form">
+          <div class="field-group" data-field="url">
+            <label for="source-url">Video URL</label>
+            <input type="text" id="source-url" placeholder="https://youtube.com/watch?v=..." autocomplete="off">
+          </div>
+
+          <div class="field-group is-hidden" data-field="file">
+            <label for="source-file">Local file</label>
+            <div class="file-drop" id="file-drop">
+              <span class="file-drop-label" id="file-drop-label">Choose a file or drop it here</span>
+              <input type="file" id="source-file" accept="audio/*,video/*">
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="language">Language</label>
+            <div class="select-wrap">
+              <select id="language">
+                <option value="english">English</option>
+                <option value="hinglish">Hinglish</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="process-btn">
+            <span class="btn-label">Process recording</span>
+          </button>
+          <p class="intake-hint">Runs the full pipeline: audio extraction → transcription → summary → RAG index.</p>
+        </form>
+
+        <!-- processing state -->
+        <div class="processing" id="processing" hidden>
+          <div class="waveform" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <ol class="stage-list" id="stage-list">
+            <li data-stage="audio"><span class="stage-dot"></span>Extracting audio</li>
+            <li data-stage="transcribe"><span class="stage-dot"></span>Transcribing</li>
+            <li data-stage="summary"><span class="stage-dot"></span>Summarizing</li>
+            <li data-stage="extract"><span class="stage-dot"></span>Pulling actions &amp; decisions</li>
+            <li data-stage="index"><span class="stage-dot"></span>Building chat index</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS DASHBOARD ============ -->
+  <section class="dashboard" id="dashboard" hidden>
+    <div class="dashboard-inner">
+
+      <div class="dashboard-head">
+        <div>
+          <p class="doc-eyebrow" id="doc-timecode">00:00:00 — 00:41:12</p>
+          <h2 id="doc-title">Session title</h2>
+        </div>
+        <button class="btn btn-ghost" type="button" id="new-session-btn">New session</button>
+      </div>
+
+      <div class="dashboard-body">
+        <nav class="doc-tabs" role="tablist" aria-label="Result sections">
+          <button class="doc-tab is-active" data-tab="summary" role="tab" aria-selected="true" type="button">
+            <span class="doc-tab-num">01</span>Summary
+          </button>
+          <button class="doc-tab" data-tab="actions" role="tab" aria-selected="false" type="button">
+            <span class="doc-tab-num">02</span>Action items
+          </button>
+          <button class="doc-tab" data-tab="decisions" role="tab" aria-selected="false" type="button">
+            <span class="doc-tab-num">03</span>Key decisions
+          </button>
+          <button class="doc-tab" data-tab="questions" role="tab" aria-selected="false" type="button">
+            <span class="doc-tab-num">04</span>Open questions
+          </button>
+          <button class="doc-tab" data-tab="transcript" role="tab" aria-selected="false" type="button">
+            <span class="doc-tab-num">05</span>Transcript
+          </button>
+          <button class="doc-tab" data-tab="chat" role="tab" aria-selected="false" type="button">
+            <span class="doc-tab-num">06</span>Chat
+          </button>
+        </nav>
+
+        <div class="doc-panels">
+
+          <div class="doc-panel is-active" data-panel="summary">
+            <p class="panel-body" id="summary-text"></p>
+          </div>
+
+          <div class="doc-panel" data-panel="actions">
+            <ul class="item-list" id="actions-list"></ul>
+          </div>
+
+          <div class="doc-panel" data-panel="decisions">
+            <ul class="item-list" id="decisions-list"></ul>
+          </div>
+
+          <div class="doc-panel" data-panel="questions">
+            <ul class="item-list" id="questions-list"></ul>
+          </div>
+
+          <div class="doc-panel" data-panel="transcript">
+            <div class="transcript-log" id="transcript-log"></div>
+          </div>
+
+          <div class="doc-panel" data-panel="chat">
+            <div class="chat-window">
+              <div class="chat-log" id="chat-log">
+                <div class="chat-msg chat-msg-bot">
+                  <p>Ask me anything about this recording — I've indexed the full transcript.</p>
+                </div>
+              </div>
+              <form class="chat-input-row" id="chat-form">
+                <input type="text" id="chat-input" placeholder="What did we decide about the launch date?" autocomplete="off">
+                <button type="submit" class="btn btn-primary" id="chat-send">Ask</button>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOW IT WORKS ============ -->
+  <section class="how" id="how">
+    <div class="how-inner">
+      <h2>What runs under the hood</h2>
+      <div class="how-grid">
+        <div class="how-card">
+          <span class="how-tag">process_audio</span>
+          <p>Pulls audio from a YouTube link or local file and chunks it for transcription.</p>
+        </div>
+        <div class="how-card">
+          <span class="how-tag">transcribe_all</span>
+          <p>Transcribes every chunk in your chosen language, then stitches it into one transcript.</p>
+        </div>
+        <div class="how-card">
+          <span class="how-tag">get_summary</span>
+          <p>Generates a title and summary from the full transcript.</p>
+        </div>
+        <div class="how-card">
+          <span class="how-tag">extract_*</span>
+          <p>Separately pulls out action items, key decisions, and open questions.</p>
+        </div>
+        <div class="how-card">
+          <span class="how-tag">build_rag_chain</span>
+          <p>Indexes the transcript so you can ask it follow-up questions afterward.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Waveform — built on top of your <code>run_pipeline</code>.</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
